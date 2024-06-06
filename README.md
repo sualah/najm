@@ -1,2 +1,2 @@
 # Najm
-## An elegant and modern programming lanhuage
+## An elegant and modern programming language
