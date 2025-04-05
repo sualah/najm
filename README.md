@@ -26,6 +26,7 @@ More features will be added incrementally.
 You’ll need [Rust](https://www.rust-lang.org/tools/install) installed. Then:
 
 ```bash
-git clone https://github.com/your-username/MyCCompiler.git
-cd MyCCompiler
+git clone https://github.com/sualah/najm.git
+cd najm
 cargo build --release
+./najm example.c
