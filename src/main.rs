@@ -1,3 +1,8 @@
+
+
+
+
 fn main() {
-    println!("Hello, world!");
+    let source_file = std::env::args().nth(1).expect("Usage: ./najm -- <source_file>");
+    println!("Hello, world!, {}", source_file);
 }
