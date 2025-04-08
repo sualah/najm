@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
-use anyhow::Context;
+use anyhow::{anyhow, bail, Context};
 use regex::Regex;
 use crate::tokens::TokenType;
 
@@ -24,50 +24,79 @@ pub fn lex(path:&Path) -> Result<Vec<TokenType>, anyhow::Error> {
         while index < chars.len() {
             match chars[index] {
                 '{' => {
-                    tokens.push( TokenType::LEFT_BRACE);
+                    tokens.push( TokenType::LeftBrace);
                     index += 1;
                 },
                 '}' => {
-                    tokens.push(TokenType::RIGHT_BRACE);
+                    tokens.push(TokenType::RightBrace);
                     index += 1;
                 },
                 '(' => {
-                    tokens.push(TokenType::LEFT_PAREN);
+                    tokens.push(TokenType::LeftParen);
                     index += 1;
                 },
                 ')' => {
-                    tokens.push(TokenType::RIGHT_PAREN);
+                    tokens.push(TokenType::RightParen);
                     index += 1;
                 },
                 ';' => {
-                    tokens.push(TokenType::SEMICOLON);
+                    tokens.push(TokenType::Semicolon);
                     index += 1;
                 },
                 c if c.is_whitespace() => {
                     index += 1;
-                    continue
+                    continue;
                 },
                 c if c.is_ascii_digit() => {
-                    tokens.push(TokenType::CONSTANT(chars[index].to_digit(10).unwrap() as i32));
-                    index += 1;
+                    let re = Regex::new(r"[0-9]+\b")?;
+                    let line_str: String = chars[index..].iter().collect();
+                    let mut matched = false;
+
+                    for cap in re.find_iter(line_str.as_str()) {
+                        let int_str = cap.as_str();
+
+                        //  tokens.push(TokenType::Identifier(cap.as_str().to_string()));
+                        let value: i32 = int_str.parse() // try parse to i32
+                            .map_err(|e| anyhow::anyhow!("Failed to parse constant '{}': {}", int_str, e))?;
+
+                        println!("constant is {}", value);
+                        tokens.push(TokenType::Constant(value));
+                      //  println!("constant is {}", cap.as_str());
+                      //  tokens.push(TokenType::Constant(cap.as_str().to_string().parse()?));
+                        index += cap.end();
+                        matched = true;
+                        break;
+                    }
+                    
+                    if !matched {
+                      //  index += 1;
+                       // bail!("no match found for character `{}`", chars[index - 1]);
+                        std::process::exit(1);
+                    }
+                    // tokens.push(TokenType::Constant(chars[index].to_digit(10).unwrap() as i32));
+                    // index += 1;
                 },
                 c if c.is_ascii_alphabetic() => {
                     let re = Regex::new(r"[a-zA-Z_]\w*\b")?;
                     let line_str: String = chars[index..].iter().collect();
-                    
+
                     for cap in re.find_iter(line_str.as_str()) {
-                        tokens.push(TokenType::IDENTIFIER(cap.as_str().to_string()));
+                        tokens.push(TokenType::Identifier(cap.as_str().to_string()));
                         index += cap.len();
-                        break
+                        break;
                     }
                 }
                 _   => {
-                    index += 1;
-                    continue
+                    println!("no match found for character `{}`", chars[index]);
+                   // std::process::exit(-1);
+                     index += 1;
+                     continue;
+                    ;
+                  //  bail!("no match found for character `{}`", chars[index]);
                 },
             };
         }
-        
+
  //   }
 
     Ok(tokens)
