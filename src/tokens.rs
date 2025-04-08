@@ -1,12 +1,12 @@
 
 #[derive(Debug, PartialEq)]
 pub enum TokenType {
-    LEFT_PAREN,
-    RIGHT_PAREN,
-    LEFT_BRACE,
-    RIGHT_BRACE,
-    SEMICOLON,
-    IDENTIFIER(String),
-    CONSTANT(i32),
-    RETURN,
+    LeftParen,
+    RightParen,
+    LeftBrace,
+    RightBrace,
+    Semicolon,
+    Identifier(String),
+    Constant(i32),
+   // RETURN,
 }

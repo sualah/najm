@@ -77,7 +77,8 @@ fn main()  -> Result<()> {
 
     if args.lex {
         let tokens = lex(&args.path)?;
-        println!("Lexing file: {:?}", tokens);
+        println!("Lexing file ...");
+        println!("{:?}", tokens);
     } else if args.parse {
         println!("Parsing file: {}", args.path.display());
     } else if args.codegen {
