@@ -1,5 +1,5 @@
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum TokenType {
     LeftParen,
     RightParen,
@@ -10,3 +10,6 @@ pub enum TokenType {
     Constant(i32),
    // RETURN,
 }
+
+
+

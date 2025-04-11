@@ -69,9 +69,9 @@ pub fn lex(path:&Path) -> Result<Vec<TokenType>, anyhow::Error> {
                     }
                     
                     if !matched {
-                      //  index += 1;
-                       // bail!("no match found for character `{}`", chars[index - 1]);
-                        std::process::exit(1);
+                       index += 1;
+                       bail!("no match found for character `{}`", chars[index - 1]);
+                     //   std::process::exit(1);
                     }
                     // tokens.push(TokenType::Constant(chars[index].to_digit(10).unwrap() as i32));
                     // index += 1;

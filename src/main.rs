@@ -11,6 +11,7 @@ use std::process::{Command, ExitCode, ExitStatus};
 use anyhow::{Context, Result};
 use clap::Parser;
 use crate::lexer::lex;
+use crate::parser::parse_tokens;
 
 #[derive(Parser, Debug)]
 struct Args {
@@ -80,7 +81,10 @@ fn main()  -> Result<()> {
         println!("Lexing file ...");
         println!("{:?}", tokens);
     } else if args.parse {
-        println!("Parsing file: {}", args.path.display());
+        let program = parse_tokens();
+        println!("Parsing file: ",);
+        println!("{:?}", program);
+
     } else if args.codegen {
             println!("Codegen file: {}", args.path.display());
     } else { println!("compiling... {}", args.path.display()) }
