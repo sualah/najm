@@ -10,8 +10,7 @@ use std::path::Path;
 use std::process::{Command, ExitCode, ExitStatus};
 use anyhow::{Context, Result};
 use clap::Parser;
-use crate::lexer::lex;
-use crate::parser::parse_tokens;
+use crate::{lexer::lex, parser::NParser};
 
 #[derive(Parser, Debug)]
 struct Args {
@@ -75,15 +74,16 @@ fn main()  -> Result<()> {
   // let reader = BufReader::new(source_file);
 
 
+    let tokens = lex(&args.path)?;
 
     if args.lex {
-        let tokens = lex(&args.path)?;
         println!("Lexing file ...");
         println!("{:?}", tokens);
     } else if args.parse {
-        let program = parse_tokens();
+        let mut parser = NParser::new(tokens);
+       // let program = parse(&mut tokens);
         println!("Parsing file: ",);
-        println!("{:?}", program);
+        println!("{:?}", parser.parse());
 
     } else if args.codegen {
             println!("Codegen file: {}", args.path.display());

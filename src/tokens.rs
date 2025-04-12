@@ -8,7 +8,12 @@ pub enum TokenType {
     Semicolon,
     Identifier(String),
     Constant(i32),
-   // RETURN,
+    
+    //keywords
+    Return,
+    Int,
+    Void,
+    
 }
 
 

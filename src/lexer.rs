@@ -59,7 +59,7 @@ pub fn lex(path:&Path) -> Result<Vec<TokenType>, anyhow::Error> {
                         let value: i32 = int_str.parse() // try parse to i32
                             .map_err(|e| anyhow::anyhow!("Failed to parse constant '{}': {}", int_str, e))?;
 
-                        println!("constant is {}", value);
+                       // println!("constant is {}", value);
                         tokens.push(TokenType::Constant(value));
                       //  println!("constant is {}", cap.as_str());
                       //  tokens.push(TokenType::Constant(cap.as_str().to_string().parse()?));
@@ -81,13 +81,21 @@ pub fn lex(path:&Path) -> Result<Vec<TokenType>, anyhow::Error> {
                     let line_str: String = chars[index..].iter().collect();
 
                     for cap in re.find_iter(line_str.as_str()) {
-                        tokens.push(TokenType::Identifier(cap.as_str().to_string()));
+                        let ident = cap.as_str();
+                        let token = match ident {
+                            "return" => TokenType::Return,
+                            "int"    => TokenType::Int,
+                            "void"   => TokenType::Void,
+                            _        => TokenType::Identifier(ident.to_string()),
+                        };
+                        
+                        tokens.push(token);
                         index += cap.len();
                         break;
                     }
                 }
                 _   => {
-                    println!("no match found for character `{}`", chars[index]);
+                 //   println!("no match found for character `{}`", chars[index]);
                    // std::process::exit(-1);
                      index += 1;
                      continue;
