@@ -1,5 +1,5 @@
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum TokenType {
     LeftParen,
     RightParen,
@@ -8,5 +8,13 @@ pub enum TokenType {
     Semicolon,
     Identifier(String),
     Constant(i32),
-   // RETURN,
+    
+    //keywords
+    Return,
+    Int,
+    Void,
+    
 }
+
+
+
