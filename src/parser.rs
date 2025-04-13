@@ -1,18 +1,9 @@
-use std::num::FpCategory::Nan;
-use clap::builder::Str;
+
 use crate::tokens::TokenType;
 
-// #[derive(Debug, Clone)]
-// pub enum Function {
-//     Function(TokenType, Stmt),
-// }
 #[derive(Debug, Clone)]
 pub struct Program {
     pub function: FunctionDefinition,
-   //  Function {
-   //  name: String,
-   //  body: Stmt
-   // },
 }
 
 #[derive(Debug, Clone)]
@@ -74,7 +65,10 @@ impl NParser {
                     other => panic!("Expected function name but got {:?}", other),
                 };
                 self.expect(&TokenType::LeftParen);
-                self.expect(&TokenType::Void);
+              //  self.expect(&TokenType::Void);
+                if let Some(TokenType::Void) = self.peek() { //making void optional
+                    self.next(); // consume 'void'
+                }
                 self.expect(&TokenType::RightParen);
                 self.expect(&TokenType::LeftBrace);
                 let stmt = self.parse_stmt();

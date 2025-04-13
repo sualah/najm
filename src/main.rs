@@ -3,6 +3,7 @@ mod parser;
 mod codegen;
 mod compiler;
 mod tokens;
+mod assembly;
 
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -11,6 +12,7 @@ use std::process::{Command, ExitCode, ExitStatus};
 use anyhow::{Context, Result};
 use clap::Parser;
 use crate::{lexer::lex, parser::NParser};
+use crate::codegen::codegen;
 
 #[derive(Parser, Debug)]
 struct Args {
@@ -74,26 +76,31 @@ fn main()  -> Result<()> {
   // let reader = BufReader::new(source_file);
 
 
-    let tokens = lex(&args.path)?;
-
+    let mut tokens = lex(&args.path)?;
+    let mut parser = NParser::new(tokens);
+    let program = parser.parse();
     if args.lex {
         println!("Lexing file ...");
-        println!("{:?}", tokens);
+       // println!("{:?}", tokens);
     } else if args.parse {
-        let mut parser = NParser::new(tokens);
        // let program = parse(&mut tokens);
         println!("Parsing file: ",);
         println!("{:?}", parser.parse());
 
     } else if args.codegen {
-            println!("Codegen file: {}", args.path.display());
-    } else { println!("compiling... {}", args.path.display()) }
-
-    // for line_result in reader.lines() {
-    //     let line = line_result.with_context(|| format!("could not read line `{}`", args.path.display()))?;
-    //     println!("{}", line);
-    // }
-
+            codegen(program).with_context(|| "Couldn't generate assembly file".to_string()).expect("assembly generation failed.");
+    } else {
+                let executable_status = Command::new("arch")
+                    .args([
+                        "-x86_64",
+                        "zsh",
+                        "-c",
+                        "gcc -o ../../demo ../../demo.s", // <-- this is the important part
+                    ])
+                    .status()
+                    .with_context(|| "failed to run gcc")?;
+                println!("executable_status: gcc exited with status {}", executable_status);
+    }
     Ok(())
 }
 
