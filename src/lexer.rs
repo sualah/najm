@@ -43,6 +43,14 @@ pub fn lex(path:&Path) -> Result<Vec<TokenType>, anyhow::Error> {
                     tokens.push(TokenType::Semicolon);
                     index += 1;
                 },
+                '-' => {
+                    tokens.push(TokenType::Negation);
+                    index += 1;
+                },
+                '-' => {
+                    tokens.push(TokenType::Negation);
+                    index += 1;
+                }
                 c if c.is_whitespace() => {
                     index += 1;
                     continue;

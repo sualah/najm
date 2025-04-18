@@ -18,7 +18,14 @@ pub enum Stmt {
 #[derive(Debug, Clone)]
 pub enum Expr {
     Constant(i32),
+   // Unary(UnaryOperator, Box<Expr>),
     Binary(Box<Expr>, TokenType, Box<Expr>),
+}
+
+#[derive(Debug, Clone)]
+pub enum UnaryOperator {
+    Negate,
+    Complement,
 }
 
 pub struct NParser {
@@ -94,81 +101,33 @@ impl NParser {
     }
     
     fn parse_expr(&mut self) -> Expr {
-     //   let token = take_token(tokens);
         match self.next() {
             Some(TokenType::Constant(val)) => Expr::Constant(val),
+            // Some(TokenType::Complement) | Some(TokenType::Negation) => {
+            //     let unary_operator = self.parse_unary_op();
+            //     let expr = self.parse_expr();
+            //     Expr::Unary(unary_operator, Box::from(expr))
+            // },
+            // Some(TokenType::LeftParen) => {
+            //     let expr = self.parse_expr();
+            //     self.expect(&TokenType::RightParen);
+            //     expr
+            // }
             other => panic!("Unexpected token in expression: {:?}", other),
         }
-        // let const_value = expect_token(TokenType::Constant(2), tokens);
+    }
+    
+    fn parse_unary_op(&mut self) -> UnaryOperator {
+        let token = self.peek().unwrap();
+        match token  { 
+            TokenType::Negation => UnaryOperator::Negate, 
+            TokenType::Complement => UnaryOperator::Complement,
+            other => panic!("Unexpected token in unary operator: {:?}", other),
+        }
+        
     }
     
 }
 
-// pub fn parse(tokens: &mut Vec<TokenType>) -> Program {
-//     println!("tokens: {:?}", tokens);
-//     let ast = Program {
-//         function: parse_function(tokens),
-//     };
-//     
-//     ast
-// }
-// 
-// fn parse_function(tokens: &mut Vec<TokenType>) -> FunctionDefinition {
-//     expect_token(TokenType::Identifier(String::from("int")), tokens);
-//     let fn_name = match expect_token(TokenType::Identifier(String::from("main")), tokens) {
-//         TokenType::Identifier(value) => value,
-//         _ => "".parse().unwrap(),
-//     };
-//     expect_token(TokenType::LeftParen, tokens);
-//     expect_token(TokenType::Identifier(String::from("void")), tokens);
-//     expect_token(TokenType::RightParen, tokens);
-//     expect_token(TokenType::LeftBrace, tokens);
-//     let stmt = parse_stmt(tokens);
-//     expect_token(TokenType::RightBrace, tokens);
-// 
-//     FunctionDefinition {
-//         name: fn_name,
-//         body: stmt,
-//     }
-// }
-// 
-// fn parse_stmt(tokens: &mut Vec<TokenType>) -> Stmt {
-//    // expect_token(TokenType::RETURN, tokens);
-//     expect_token(TokenType::Identifier(String::from("return")), tokens);
-//     let expr = parse_expr(tokens);
-//     expect_token(TokenType::Semicolon, tokens);
-//     Stmt::Return(expr)
-// }
-// 
-//  fn parse_expr(tokens: &mut Vec<TokenType>) -> Expr {
-//      let token = take_token(tokens);
-//      match token {
-//          TokenType::Constant(val) => Expr::Constant(val),
-//          other => {
-//              println!("Expected a constant, but got {:?}", other);
-//              std::process::exit(1);
-//            //  Expr::Constant(const_value)
-// 
-//          }
-//      }
-//     // let const_value = expect_token(TokenType::Constant(2), tokens);
-//  }
-// 
-// fn expect_token(expected_token: TokenType, tokens: &mut Vec<TokenType>)  -> TokenType {
-//     
-//     let actual_token = take_token(tokens);
-//     
-//     if expected_token != actual_token {
-//         println!("expected: {:?} but got: {:?}", expected_token, actual_token);
-//         std::process::exit(1);
-//     }
-//     
-//     actual_token
-//     
-// }
-// 
-// fn take_token(tokens: &mut Vec<TokenType>) -> TokenType {
-//     let token = tokens.remove(0);
-//     token
-// }
+
 

@@ -76,12 +76,12 @@ fn main()  -> Result<()> {
   // let reader = BufReader::new(source_file);
 
 
-    let mut tokens = lex(&args.path)?;
-    let mut parser = NParser::new(tokens);
+    let mut  tokens = lex(&args.path)?;
+    let mut parser = NParser::new(tokens.clone());
     let program = parser.parse();
     if args.lex {
         println!("Lexing file ...");
-       // println!("{:?}", tokens);
+        println!("{:?}", tokens);
     } else if args.parse {
        // let program = parse(&mut tokens);
         println!("Parsing file: ",);

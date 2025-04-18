@@ -9,10 +9,15 @@ pub enum TokenType {
     Identifier(String),
     Constant(i32),
     
+    //unary
+    Negation,
+    Complement,
+    
     //keywords
     Return,
     Int,
     Void,
+    
     
 }
 
