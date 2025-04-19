@@ -78,7 +78,6 @@ fn main()  -> Result<()> {
 
     let mut  tokens = lex(&args.path)?;
     let mut parser = NParser::new(tokens.clone());
-    let program = parser.parse();
     if args.lex {
         println!("Lexing file ...");
         println!("{:?}", tokens);
@@ -88,7 +87,9 @@ fn main()  -> Result<()> {
         println!("{:?}", parser.parse());
 
     } else if args.codegen {
-            codegen(program).with_context(|| "Couldn't generate assembly file".to_string()).expect("assembly generation failed.");
+        let program = parser.parse();
+
+        codegen(program).with_context(|| "Couldn't generate assembly file".to_string()).expect("assembly generation failed.");
     } else {
                 let executable_status = Command::new("arch")
                     .args([

@@ -44,11 +44,17 @@ pub fn lex(path:&Path) -> Result<Vec<TokenType>, anyhow::Error> {
                     index += 1;
                 },
                 '-' => {
-                    tokens.push(TokenType::Negation);
-                    index += 1;
+                    if (chars[index + 1] != '-') {
+                        tokens.push(TokenType::Negation);
+                        index += 1;
+                    }  else {
+                        bail!("can't handle decrement now");
+                    }
+                    // handle decrement operator(--)
+                   
                 },
-                '-' => {
-                    tokens.push(TokenType::Negation);
+                '~' => {
+                    tokens.push(TokenType::Complement);
                     index += 1;
                 }
                 c if c.is_whitespace() => {

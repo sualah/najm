@@ -18,7 +18,7 @@ pub enum Stmt {
 #[derive(Debug, Clone)]
 pub enum Expr {
     Constant(i32),
-   // Unary(UnaryOperator, Box<Expr>),
+    Unary(UnaryOperator, Box<Expr>),
     Binary(Box<Expr>, TokenType, Box<Expr>),
 }
 
@@ -103,22 +103,22 @@ impl NParser {
     fn parse_expr(&mut self) -> Expr {
         match self.next() {
             Some(TokenType::Constant(val)) => Expr::Constant(val),
-            // Some(TokenType::Complement) | Some(TokenType::Negation) => {
-            //     let unary_operator = self.parse_unary_op();
-            //     let expr = self.parse_expr();
-            //     Expr::Unary(unary_operator, Box::from(expr))
-            // },
-            // Some(TokenType::LeftParen) => {
-            //     let expr = self.parse_expr();
-            //     self.expect(&TokenType::RightParen);
-            //     expr
-            // }
+            Some(TokenType::Complement) | Some(TokenType::Negation) => {
+                let unary_operator = self.parse_unary_op();
+                let expr = self.parse_expr();
+                Expr::Unary(unary_operator, Box::from(expr))
+            },
+            Some(TokenType::LeftParen) => {
+                let expr = self.parse_expr();
+                self.expect(&TokenType::RightParen);
+                expr
+            }
             other => panic!("Unexpected token in expression: {:?}", other),
         }
     }
     
     fn parse_unary_op(&mut self) -> UnaryOperator {
-        let token = self.peek().unwrap();
+        let token = self.tokens[self.pos - 1].clone();
         match token  { 
             TokenType::Negation => UnaryOperator::Negate, 
             TokenType::Complement => UnaryOperator::Complement,

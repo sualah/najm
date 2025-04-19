@@ -11,7 +11,10 @@ pub enum TokenType {
     
     //unary
     Negation,
+    Increment,
+    Decrement,
     Complement,
+    
     
     //keywords
     Return,
