@@ -4,6 +4,8 @@ mod codegen;
 mod compiler;
 mod tokens;
 mod assembly;
+mod tacky;
+mod utils;
 
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -13,6 +15,7 @@ use anyhow::{Context, Result};
 use clap::Parser;
 use crate::{lexer::lex, parser::NParser};
 use crate::codegen::codegen;
+use crate::tacky::Tacky;
 
 #[derive(Parser, Debug)]
 struct Args {
@@ -24,6 +27,9 @@ struct Args {
 
     #[arg(long)]
     codegen: bool,
+
+    #[arg(long)]
+    tacky: bool,
 
     path: std::path::PathBuf,
 }
@@ -84,9 +90,14 @@ fn main()  -> Result<()> {
     } else if args.parse {
        // let program = parse(&mut tokens);
         println!("Parsing file: ",);
-        println!("{:?}", parser.parse());
+        println!("{}", parser.parse());
 
+    } else if args.tacky {
+        let mut tacky = Tacky::new(parser);
+        println!("Tacky gen  ...");
+        println!("{}", tacky.gen_tacky())
     } else if args.codegen {
+        
         let program = parser.parse();
 
         codegen(program).with_context(|| "Couldn't generate assembly file".to_string()).expect("assembly generation failed.");

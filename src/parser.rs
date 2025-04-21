@@ -1,4 +1,12 @@
 
+/*
+program = Program(function_definition)
+function_definition = Function(identifier name, statement body)
+statement = Return(exp)
+exp = Constant(int) | Unary(unary_operator, exp)
+unary_operator = Complement | Negate
+ */
+use std::fmt;
 use crate::tokens::TokenType;
 
 #[derive(Debug, Clone)]
@@ -19,7 +27,7 @@ pub enum Stmt {
 pub enum Expr {
     Constant(i32),
     Unary(UnaryOperator, Box<Expr>),
-    Binary(Box<Expr>, TokenType, Box<Expr>),
+    // Binary(Box<Expr>, TokenType, Box<Expr>),
 }
 
 #[derive(Debug, Clone)]
@@ -127,6 +135,56 @@ impl NParser {
         
     }
     
+}
+
+/*
+ Pretty printer for parser ast
+ */
+
+impl fmt::Display for Program {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        writeln!(f, "Program {{")?;
+        writeln!(f, "  {}", self.function)?;
+        writeln!(f, "}}")
+    }
+}
+
+impl fmt::Display for FunctionDefinition {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        writeln!(f, "FunctionDefinition {{")?;
+        writeln!(f, "    name: \"{}\",", self.name)?;
+        writeln!(f, "    body: {}", self.body)?;
+        writeln!(f, "  }}")
+    }
+}
+
+impl fmt::Display for Stmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Stmt::Return(expr) => {
+                write!(f, "Return({})", expr)
+            }
+        }
+    }
+}
+
+impl fmt::Display for Expr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Expr::Constant(value) => write!(f, "Constant({})", value),
+            Expr::Unary(op, expr) => write!(f, "Unary({}, {})", op, expr),
+        }
+    }
+}
+
+
+impl fmt::Display for UnaryOperator {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            UnaryOperator::Negate => write!(f, "Negate"),
+            UnaryOperator::Complement => write!(f, "Complement"),
+        }
+    }
 }
 
 
